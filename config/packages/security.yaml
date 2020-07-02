@@ -1,0 +1,33 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: auto
+        App\Entity\Project:
+            algorithm: auto
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: token
+        app_project_provider:
+            entity:
+                class: App\Entity\Project
+                property: token
+    firewalls:
+        main:
+            provider: app_user_provider
+            stateless: true
+            pattern: ^/admin
+            anonymous: ~
+            guard:
+                authenticators:
+                    - App\Security\UserTokenAuthenticator
+        project:
+            provider: app_project_provider
+            stateless: true
+            pattern: ^/api
+            anonymous: ~
+            guard:
+                authenticators:
+                    - App\Security\ProjectTokenAuthenticator

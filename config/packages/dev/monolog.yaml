@@ -1,0 +1,35 @@
+monolog:
+    channels: [app]
+    handlers:
+        filter_error:
+            type: filter
+            handler: error
+            min_level: error
+            channels: ["app"]
+        filter_success:
+            type: filter
+            handler: success
+            max_level: warning
+            channels: ["app"]
+        error:
+            type: rotating_file
+            path: "%kernel.logs_dir%/%kernel.environment%/error.log"
+            formatter: App\Util\Logger\CustomLineFormatter
+        success:
+            type: rotating_file
+            path: "%kernel.logs_dir%/%kernel.environment%/success.log"
+            formatter: App\Util\Logger\CustomLineFormatter
+        doctrine:
+            type: rotating_file
+            path: "%kernel.logs_dir%/%kernel.environment%/sql.log"
+            formatter: App\Util\Logger\CustomLineFormatter
+            channels: ["doctrine"]
+        deprecation_filter:
+            type: filter
+            handler: deprecation
+            max_level: info
+            channels: ["php"]
+        deprecation:
+            type: rotating_file
+            path: "%kernel.logs_dir%/%kernel.environment%/deprecation.log"
+            formatter: App\Util\Logger\CustomLineFormatter
