@@ -23,6 +23,11 @@ class FilterController extends AbstractBaseController
     public function index(Request $request)
     {
         try {
+            $command = escapeshellcmd('/usr/custom/test.py');
+            $output = shell_exec($command);
+            echo $output;
+
+
             $command = 'python3 /Users/canberkgecgel/Desktop/Cartoona-Me/CartoonMe/cartoonme-python/evaluate.py --checkpoint /Users/canberkgecgel/Desktop/checkpoints/checkpoint_new\ \(29\) --in-path /Users/canberkgecgel/Desktop/Cartoona-Me/input/selfie.jpg --out-path /Users/canberkgecgel/Desktop/Cartoona-Me/output';
             //$command = escapeshellcmd();
             //shell_exec("cd");

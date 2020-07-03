@@ -6,7 +6,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "ext-redis": "*",
         "ext-openssl": "*",
         "doctrine/doctrine-bundle": "^2.0",
         "nelmio/cors-bundle": "^2.0",
