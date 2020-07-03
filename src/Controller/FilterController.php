@@ -54,9 +54,8 @@ class FilterController extends AbstractBaseController
             $checkPoint = $checkPointRepository->findById($checkPointId);
 
             $commandText = $this->generatePythonCommand($checkPoint, $inputPath);
-            dd($commandText);
-            $command = escapeshellcmd($commandText);
-            $output = shell_exec($command);
+            //$command = escapeshellcmd($commandText);
+            $output = shell_exec($commandText);
 
 
             return $this->jsonResponseService->successResponse(['output' => $output]);
@@ -70,7 +69,7 @@ class FilterController extends AbstractBaseController
     {
         $pythonCommand = 'python3 ' . self::EVALUATE_PATH . ' --checkpoint ' . $checkPoint->getServerPath() ;
         $pythonCommand .= ' --in-path ' . $inputPath;
-        $pythonCommand .= ' --out-path ' . $this->projectDir . '/output/';
+        $pythonCommand .= ' --out-path ' . $this->projectDir . '/output/ 2>&1';
 
         return $pythonCommand;
     }
