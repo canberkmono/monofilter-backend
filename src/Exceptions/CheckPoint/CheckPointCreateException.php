@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\Login;
+namespace App\Exceptions\CheckPoint;
 
 class CheckPointCreateException extends \Exception
 {
