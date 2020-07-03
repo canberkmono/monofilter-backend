@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\User;
+namespace App\Exceptions\Project;
 
 class ProjectNotFoundException extends \Exception
 {

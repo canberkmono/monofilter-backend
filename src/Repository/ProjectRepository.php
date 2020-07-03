@@ -4,10 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Project;
 use App\Enums\ProjectStatusCodes;
-use App\Exceptions\User\ProjectAlreadyExistsException;
-use App\Exceptions\User\ProjectCreateException;
-use App\Exceptions\User\ProjectNotFoundException;
-use App\Exceptions\User\ProjectUpdateException;
+use App\Exceptions\Project\ProjectAlreadyExistsException;
+use App\Exceptions\Project\ProjectCreateException;
+use App\Exceptions\Project\ProjectNotFoundException;
+use App\Exceptions\Project\ProjectUpdateException;
 use App\Helpers\TokenHelper;
 use App\Repository\Interfaces\ProjectInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
