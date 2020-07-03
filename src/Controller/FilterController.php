@@ -56,7 +56,7 @@ class FilterController extends AbstractBaseController
             $commandText = $this->generatePythonCommand($checkPoint, $inputPath);
             $command = escapeshellcmd($commandText);
             $output = shell_exec($command);
-            unlink($inputPath);
+
 
             return $this->jsonResponseService->successResponse(['output' => $output]);
         } catch (\Exception $exception) {
