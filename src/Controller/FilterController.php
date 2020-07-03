@@ -54,6 +54,7 @@ class FilterController extends AbstractBaseController
             $checkPoint = $checkPointRepository->findById($checkPointId);
 
             $commandText = $this->generatePythonCommand($checkPoint, $inputPath);
+            dd($commandText);
             $command = escapeshellcmd($commandText);
             $output = shell_exec($command);
 
