@@ -2,7 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\CheckPoint;
+use App\Enums\HttpStatusCodes;
+use App\Helpers\TokenHelper;
+use App\Repository\CheckPointRepository;
+use App\Service\JsonResponseService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -13,31 +20,57 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FilterController extends AbstractBaseController
 {
+    CONST EVALUATE_PATH = '/home/cartoonamegoogle/cartooname-py/evaluate.py';
+
+    private $projectDir;
+
+    public function __construct(JsonResponseService $jsonResponseService, LoggerInterface $loggerService, KernelInterface $kernel)
+    {
+        parent::__construct($jsonResponseService, $loggerService);
+        $this->projectDir = $kernel->getProjectDir();
+    }
+
+
     /**
      * @param Request $request
+     * @param CheckPointRepository $checkPointRepository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
      * @Route("", methods={"POST"})
-     * python3 evaluate.py --checkpoint /Users/hakanugras/Downloads/checkpoint_new\ \(31\) --in-path /Users/hakanugras/Desktop/unnamed.jpg --out-path /Users/hakanugras/Desktop/Output
      *
      * python3 /Users/canberkgecgel/Desktop/Cartoona-Me/CartoonMe/cartoonme-python/evaluate.py --checkpoint /Users/canberkgecgel/Desktop/Cartoona-Me/CartoonMe/cartoonme-python/checkpoints/}checkpoint_new\ \(31\) --in-path /Users/canberkgecgel/Desktop/Cartoona-Me/input/selfie.jpg --out-path /Users/canberkgecgel/Desktop/Cartoona-Me/output
      */
-    public function index(Request $request)
+    public function index(Request $request, CheckPointRepository $checkPointRepository)
     {
+        $imageContent = $request->request->get('image');
+        $checkPointId = $request->request->get('checkPointId');
+
         try {
-            $command = escapeshellcmd('/usr/custom/test.py');
-            $output = shell_exec($command);
-            echo $output;
+            $fileName = TokenHelper::generateToken();
 
+            $inputPath = $this->projectDir . '/input/' . $fileName . '.jpg';
+            file_put_contents($inputPath, file_get_contents($imageContent));
 
-            $command = 'python3 /Users/canberkgecgel/Desktop/Cartoona-Me/CartoonMe/cartoonme-python/evaluate.py --checkpoint /Users/canberkgecgel/Desktop/checkpoints/checkpoint_new\ \(29\) --in-path /Users/canberkgecgel/Desktop/Cartoona-Me/input/selfie.jpg --out-path /Users/canberkgecgel/Desktop/Cartoona-Me/output';
-            //$command = escapeshellcmd();
-            //shell_exec("cd");
-            chdir(__DIR__);
-            dd(__DIR__);
+            $checkPoint = $checkPointRepository->findById($checkPointId);
+
+            $commandText = $this->generatePythonCommand($checkPoint, $inputPath);
+            $command = escapeshellcmd($commandText);
             $output = shell_exec($command);
-            dd("a: " . $output);
-        }catch (\Exception $exception){
-            dd($exception);
+            unlink($inputPath);
+
+            return $this->jsonResponseService->successResponse(['output' => $output]);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseService->errorResponse($exception->getMessage(), HttpStatusCodes::BAD_REQUEST);
         }
 
+    }
+
+    private function generatePythonCommand(CheckPoint $checkPoint, $inputPath)
+    {
+        $pythonCommand = 'python3 ' . self::EVALUATE_PATH . ' --checkpoint ' . $checkPoint->getServerPath() ;
+        $pythonCommand .= ' --in-path ' . $inputPath;
+        $pythonCommand .= ' --out-path ' . $this->projectDir . '/output/';
+
+        return $pythonCommand;
     }
 }
