@@ -123,7 +123,7 @@ class ProjectTokenAuthenticator extends AbstractGuardAuthenticator
 
         $project = $this->entityManager->getRepository(Project::class)
             ->findOneBy([
-                'token' => $token,
+                'project_token' => $token,
             ]);
 
         if (!$project) {
