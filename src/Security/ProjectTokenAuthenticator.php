@@ -9,6 +9,7 @@
 namespace App\Security;
 
 use App\Entity\Project;
+use App\Entity\User;
 use App\Service\JsonResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -112,7 +113,7 @@ class ProjectTokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * @param mixed $credentials
      * @param UserProviderInterface $userProvider
-     * @return null|object|UserInterface
+     * @return object|UserInterface|null
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
@@ -130,7 +131,12 @@ class ProjectTokenAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        return $project;
+        $result = new User();
+        $result->setEmail($project->getListenerUrl());
+        $result->setFullName($project->getName());
+        $result->setToken($project->getProjectToken());
+
+        return $result;
     }
 
     /**
