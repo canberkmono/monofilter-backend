@@ -77,7 +77,7 @@ class ProjectTokenAuthenticator extends AbstractGuardAuthenticator
     public function supports(Request $request)
     {
         return !in_array($request->attributes->get('_route'), [
-            'app_filter_index'
+            //filter requests
         ]);
     }
 
